@@ -57,11 +57,30 @@ async function deleteCar(req: Request, res: Response) {
   }
 }
 
+async function updateCar(req: Request, res: Response){
+  const carId = parseInt(req.params.carId);
+  const { model, licensePlate, year, color } = req.body;
+
+  try {
+    await carService.updateCar(carId, model, licensePlate, year, color);
+    res.send(httpStatus.OK);
+  } catch (e) {
+    console.log(e);
+    if (e.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+}
+
 const carController = {
   getAllCars,
   getSpecificCar,
   createCar,
-  deleteCar
+  deleteCar,
+  updateCar
 }
 
 export default carController;
